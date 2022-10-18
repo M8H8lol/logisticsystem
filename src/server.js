@@ -3,7 +3,6 @@ import mongoose from "mongoose";
 import Company from "./models/Company.js";
 import Employee from "./models/Employee.js";
 import Order from "./models/Order.js";
-import OrderItem from "./models/OrderItem.js";
 import Products from "./models/Products.js";
 import Warehouse from "./models/Warehouse.js";
 
@@ -20,6 +19,7 @@ app.post("/companies", async (req, res) => {
     try {
         await Company.create({
             companyName: req.body.companyName,
+            wareHouseNames: req.body.wareHouseNames,
             amountOfWarehouses: req.body.amountOfWarehouses
         });
         res.status(200).send("Company added");
@@ -37,6 +37,7 @@ app.get("/employees", async (req, res) => {
 app.post("/employees", async (req, res) => {
     try {
         await Employee.create({
+            employeeName: req.body.employeeName,
             employeeAvailable: req.body.employeeAvailable,
             whichWarehouses: req.body.whichWarehouses,
             role: req.body.role
@@ -70,27 +71,14 @@ app.post("/orders", async (req, res) => {
     }
 })
 
-app.get("/orderItem", async (req, res) => {
-    const orderItem = await OrderItem.find();
-    res.json(orderItem);
-});
-
-app.post("/orderItems", async (req, res) => {
-    try {
-        await OrderItem.create({
-            product: req.body.product,
-            amount: req.body.amount,
-        })
-        res.status(200).send("Order items added")
-    } catch (error) {
-        res.status(400).send("Error adding order items");
-    }
-})
-
 app.get("/products", async (req, res) => {
     const products = await Products.find();
     res.json(products);
 });
+
+app.get("/products/:weekday", async (req, res) => {
+    req.params.weekday
+})
 
 app.post("/products", async (req, res) => {
     try {
@@ -115,7 +103,7 @@ app.get("/warehouses", async (req, res) => {
 app.post("/warehouses", async (req, res) => {
     try {
         await Warehouse.create({
-            warehouseName: req.body.warehouseName,
+            wareHouseName: req.body.wareHouseName,
             employees: req.body.employees,
             products: req.body.products
         })

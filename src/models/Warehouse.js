@@ -1,7 +1,7 @@
 import mongoose from "mongoose"
 
 const warehouseScheme = new mongoose.Schema({
-    warehouseName: String,
+    wareHouseName: String,
     employees: [String],
     products: [String]
 });
