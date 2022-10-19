@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
 const orderScheme = new mongoose.Schema({
-    orderNumber: String,
-    items:
-    {
-        item: String,
-        amount: Number
-    },
+    orderNumber: Number,
     orderStatus: String,
-    pickerToOrder: String,
-    drivertoOrder: String,
+    items:
+        [{
+            name: String,
+            amount: Number,
+            pickerToOrder: String,
+            driverToOrder: String
+        }],
 });
 export default mongoose.model("Orders", orderScheme);

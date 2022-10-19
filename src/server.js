@@ -55,15 +55,14 @@ app.get("/orders", async (req, res) => {
 
 app.post("/orders", async (req, res) => {
     try {
+        console.log(req.body.items);
         await Order.create({
             orderNumber: req.body.orderNumber,
-            items: {
-                item: req.body.item,
-                amount: req.body.amount,
-            },
+            items: req.body.items,
             ordersSatus: req.body.orderStatus,
             pickerToOrder: req.body.pickerToOrder,
-            drivertoOrder: req.body.drivertoOrder,
+            driverToOrder: req.body.driverToOrder,
+            orderStatus: req.body.orderStatus,
         })
         res.status(200).send("Order added")
     } catch (err) {
