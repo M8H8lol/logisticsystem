@@ -34,6 +34,7 @@ app.get("/employees", async (req, res) => {
     res.json(employees);
 });
 
+
 app.post("/employees", async (req, res) => {
     try {
         await Employee.create({
@@ -53,9 +54,13 @@ app.get("/orders", async (req, res) => {
     res.json(orders);
 });
 
+app.get("/orders/in-progress", async (req, res) => {
+    const orders = await Order.find({ orderStatus: "In progress" });
+    res.json(orders);
+})
+
 app.post("/orders", async (req, res) => {
     try {
-        console.log(req.body.items);
         await Order.create({
             orderNumber: req.body.orderNumber,
             items: req.body.items,
@@ -112,8 +117,20 @@ app.post("/warehouses", async (req, res) => {
     }
 })
 
+async function getWorkingToday() {
+    const workingToday = [];
+    const today = new Date();
+    const employees = await Employees.find();
+    employees.forEach( (e) => {
+        if (e.schedule[today.getDay()]) {
+            workingToday.push(e);
+        }
+    });
+}
+
 
 app.listen(3030, () => {
+    
     console.log("Server started at http://localhost:3030");
     mongoose.connect("mongodb://localhost/logistic").then(() => {
         // Company.create( { companyName: "The Cool Company" });
