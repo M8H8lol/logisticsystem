@@ -29,6 +29,7 @@ app.post("/companies", async (req, res) => {
     }
 });
 
+
 app.get("/employees", async (req, res) => {
     const employees = await Employee.find();
     res.json(employees);
@@ -54,26 +55,43 @@ app.get("/orders", async (req, res) => {
     res.json(orders);
 });
 
-app.get("/orders/in-progress", async (req, res) => {
-    const orders = await Order.find({ orderStatus: "In progress" });
+app.get("/orders/:status", async (req, res) => {
+    const orders = await Order.find({ orderStatus: req.params.status });
+    if (orders == {}) {
+        res.status(404).send("Orders not found")
+    }
     res.json(orders);
 })
 
-app.post("/orders", async (req, res) => {
+app.post("/order", async (req, res) => {
     try {
         await Order.create({
             orderNumber: req.body.orderNumber,
             items: req.body.items,
-            ordersSatus: req.body.orderStatus,
+            orderSatus: req.body.orderStatus,
             pickerToOrder: req.body.pickerToOrder,
             driverToOrder: req.body.driverToOrder,
-            orderStatus: req.body.orderStatus,
         })
         res.status(200).send("Order added")
     } catch (err) {
-        res.status(400).send("Error adding employee" + err);
+        res.status(400).send("Error adding order" + err);
     }
 })
+
+// app.put("/order/:orderNumber", (req, res) => {
+//     try {
+//         Order.findByIdAndUpdate({(req.params.orderNumber)}, {
+//             "items": req.body.items,
+//             "orderSatus": req.body.orderStatus,
+//             "pickerToOrder": req.body.pickerToOrder,
+//             "driverToOrder": req.body.driverToOrder,
+//         })
+//     }
+//     catch (err){
+//         res.status(400).send("Error changing order" + err);
+//     }
+// })
+
 
 app.get("/products", async (req, res) => {
     const products = await Products.find();
@@ -87,11 +105,11 @@ app.get("/products/:weekday", async (req, res) => {
 app.post("/products", async (req, res) => {
     try {
         await Products.create({
-            productName: req.body.productName,
-            productPrice: req.body.productPrice,
-            productWeight: req.body.productWeight,
+            name: req.body.name,
+            price: req.body.price,
+            weight: req.body.weight,
             shelfNumber: req.body.shelfNumber,
-            productAvailable: req.body.productAvailable
+            available: req.body.available
         });
         res.status(200).send("Products added")
     } catch (error) {
@@ -127,7 +145,6 @@ async function getWorkingToday() {
         }
     });
 }
-
 
 app.listen(3030, () => {
     
